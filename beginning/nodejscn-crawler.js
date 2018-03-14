@@ -5,7 +5,7 @@ var http = require('http')
 
 function filter(html,statusCode){
     var $ = cheerio.load(html)
-        ,html =  querystring.unescape($('#column2').children("#intro").next("ul").text())
+        ,html =  querystring.unescape($('#column2').children("#intro").next("ul").text())  //将含有%的字符串进行解码
         console.log(html,statusCode)
 }
 
