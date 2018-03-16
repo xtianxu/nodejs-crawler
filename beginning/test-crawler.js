@@ -8,13 +8,21 @@ var http = require('http')
 
 function domFilter(html,statusCode){
     var $ = cheerio.load(html)
-        ,html = querystring.unescape($('#column2').children("#intro").next("ul").children("li").children('a'))
-        /*,html = $('#column2').children("#intro").next("ul").children("li").children('a')*/
-        
+        /*,html = querystring.unescape($('#column2').children("#intro").next("ul").children("li").children('a'))*/
+        ,html = $('#column2').children("#intro").next("ul").find("li")
+        ,hrefArray = []
+        ,href = ''
+
+        html.each(function(){
+            href = html.find('a').attr('href')
+            hrefArray.push(href)
+
+        }) 
+
 
     console.log(statusCode)
 
-    return html
+    return hrefArray
 }
 
 function httpRequest(url){
