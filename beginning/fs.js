@@ -1,4 +1,5 @@
 var fs = require('fs')
+    ,csv = require('csv')
     ,data = 'Embrace the dark side' 
 
 exports.writeHtml = function(data){
@@ -12,3 +13,5 @@ exports.writeHtml = function(data){
     })
 
 }
+
+

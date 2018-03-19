@@ -9,18 +9,23 @@ var http = require('http')
 function domFilter(html,statusCode){
     var $ = cheerio.load(html)
         /*,html = querystring.unescape($('#column2').children("#intro").next("ul").children("li").children('a'))*/
-        ,html = $('#column2').children("#intro").next("ul").find("li")
+        ,html = $('#column2').children("#intro").next("ul").children("li").children('a')
         ,hrefArray = []
         ,href = ''
 
         html.each(function(){
-            href = html.find('a').attr('href')
+            /*href = this.attribs.href*/
+            var currentAtag = $(this) //fetch the current cheerio? object, the commented line above does the same
+
+            href = currentAtag.attr('href')
+
             hrefArray.push(href)
 
         }) 
 
 
     console.log(statusCode)
+
 
     return hrefArray
 }
@@ -34,7 +39,7 @@ function httpRequest(url){
             html += data
         })
         res.on('end', function(){
-            writeFile.writeHtml(domFilter(html,statusCode))
+            writeFile.writeCSV(domFilter(html,statusCode))
         })
     }).on('error', function(err){
         console.log(err)
