@@ -1,54 +1,74 @@
 
 var http = require('http')
-    ,https = require('https')
-    ,cheerio = require('cheerio')
-    ,querystring = require('querystring')
-    ,url = 'http://nodejs.cn/api/'
-    ,writeFile = require('./fs.js');
+    , https = require('https')
+    , cheerio = require('cheerio')
+    , querystring = require('querystring')
+    , siteUrl = 'http://nodejs.cn/api/'
+    , fs = require('./fs.js');
 
-function domFilter(html,statusCode){
+function domFilter(html) {
+
     var $ = cheerio.load(html)
-        /*,html = querystring.unescape($('#column2').children("#intro").next("ul").children("li").children('a'))*/
-        ,html = $('#column2').children("#intro").next("ul").children("li").children('a')
-        ,hrefArray = []
-        ,href = ''
+        , html = $('#column2').children("#intro").next("ul").children("li").children('a')
+        , hrefArray = []
+        , href = ''
 
-        html.each(function(){
-            /*href = this.attribs.href*/
-            var currentAtag = $(this) //fetch the current cheerio? object, the commented line above does the same
+    html.each(function () {
+        //href = this.attribs.href
+        var currentAtag = $(this) //fetch the current cheerio? object, the commented line above does the same
 
-            href = currentAtag.attr('href')
+        href = currentAtag.attr('href')
 
-            hrefArray.push(href)
-
-        }) 
-
-
-    console.log(statusCode)
-
+        hrefArray.push(href)
+    })
 
     return hrefArray
 }
 
-function httpRequest(url){
-    http.get(url, function(res){
-        var html = ''
-            ,statusCode = res.statusCode
 
-        res.on('data', function(data){
+function loopWrite(html) {
+    var hrefArray = domFilter(html)
+
+    hrefArray.forEach(function (value, index, array) {
+        var url = siteUrl + value
+            , filePath = './data fetched/' + value
+
+        http.get(url, function (res) {
+            var html = ''
+                , statusCode = res.statusCode
+
+            res.on('data', function (data) {
+                html += data
+            })
+            res.on('end', function () {
+                fs.writeTxt(filePath, html)
+            })
+        }).on('error', function (err) {
+            console.log(err)
+        })
+
+    })
+
+}
+
+function httpGetRequest(siteUrl) {
+    
+    http.get(siteUrl, function (res) {
+        var html = ''
+            , statusCode = res.statusCode
+
+        res.on('data', function (data) {
             html += data
         })
-        res.on('end', function(){
-            writeFile.writeCSV(domFilter(html,statusCode))
+        res.on('end', function () {
+            loopWrite(html)
         })
-    }).on('error', function(err){
+    }).on('error', function (err) {
         console.log(err)
     })
+
 }
 
-function crawler(){
-    httpRequest(url)
-}
 
-httpRequest(url)
 
+httpGetRequest(siteUrl)

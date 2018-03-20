@@ -2,13 +2,13 @@ var fs = require('fs')
     ,csv = require('csv')
     ,data = 'Embrace the dark side' 
 
-exports.writeHtml = function(data){
+exports.writeTxt = function(filePath,data){
 
-    fs.writeFile('wfile.txt',data+'\r\n'+'\r\n',{flag:'a'},function(err){
+    fs.writeFile(filePath,data+'\r\n'+'\r\n',{flag:'a'},function(err){
         if(err){
-            console.log('Write file failed')
+            console.log('Write file failed: '+filePath)
         }else{
-            console.log('Write file succeed')
+            console.log('Write file succeeded: '+filePath)
         }
     })
 
