@@ -4,17 +4,24 @@ const http = require('http')
 
 var url = 'http://nodejs.cn/api/'
 
-function httpGetRequest(url){
-    var html = ''
+var html = '1'
 
-    http.get(url,function(res){
+function httpGetRequest(url,html){
+    
+
+    http.get(url,function(req,res){
         res.on('data',function(data){
             html += data 
+
         })
         res.on('end',function(){
-            console.log(html)
+                return res.end(html)
+
         })
     })
+
 }
 
-httpGetRequest(url)
+html = httpGetRequest(url)
+
+console.log(html)
